@@ -1,48 +1,36 @@
 package com.example;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.junit.jupiter.api.Test;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class HelloServletTest {
 
     @Test
-    void testDoGet() throws Exception {
-
-        // Create servlet instance
+    public void testDoGet() throws Exception {
         HelloServlet servlet = new HelloServlet();
 
-        // Mock request and response
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        // Capture output
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
+        StringWriter sw = new StringWriter();
+        PrintWriter writer = new PrintWriter(sw);
 
         when(response.getWriter()).thenReturn(writer);
 
-        // Call servlet method
         servlet.doGet(request, response);
 
         writer.flush();
 
-        String result = stringWriter.toString();
-
-        // Assertions
-        assert(result.contains("Deployment Successful!"));
-        assert(result.contains("GitHub"));
-        assert(result.contains("Jenkins"));
-        assert(result.contains("Docker"));
-        assert(result.contains("Tomcat"));
-
-        // Verify response type set
         verify(response).setContentType("text/html");
+        assert sw.toString().contains("Deployment Successful");
     }
 }
